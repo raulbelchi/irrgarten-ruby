@@ -21,8 +21,29 @@ class TestP1
 
   DICE = Dice.new
 
+  puts("Prueba shieldsReward")
   for i in (0..10)
-    puts(DICE.randomStrength)
+    puts(DICE.shieldsReward())
+  end
+
+  puts("Prueba healthReward")
+  for i in (0..10)
+    puts(DICE.healthReward())
+  end
+
+  puts("Prueba resurrectPlayer")
+  for i in (0..10)
+    puts(DICE.resurrectPlayer())
+  end
+
+  puts("Prueba discardElement")
+  for i in (0..10)
+    puts(DICE.discardElement(3))
+  end
+
+  puts("Prueba randomStrength")
+  for i in (0..10)
+    puts(DICE.randomStrength())
   end
 
 end

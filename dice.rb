@@ -67,7 +67,7 @@ class Dice
     elsif(usesLeft == 0)
       return true
     else
-      return generator.rand(@@MAX_USES) <= usesLeft;
+      return @@generator.rand(@@MAX_USES) >= usesLeft;
     end
   end
 end
