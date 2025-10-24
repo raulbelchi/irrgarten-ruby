@@ -21,6 +21,19 @@ class Labyrinth
     @monsters = Array.new(@nRows) { Array.new(@nCols) }
     @players = Array.new(@nRows) { Array.new(@nCols) }
     @labyrinth = Array.new(@nRows) { Array.new(@nCols) }
+
+    #Rellenamos el laberinto con carácteres vacíos y los muros exteriores
+    @nRows.times do |i|
+      @nCols.times do |j|
+        if i == @exitRow && j == @exitCol
+          @labyrinth[i][j] = EXIT_CHAR
+        elsif i == 0 || i == (@nRows - 1) || j == 0 || j == (@nCols - 1)
+          @labyrinth[i][j] = BLOCK_CHAR
+        else
+          @labyrinth[i][j] = EMPTY_CHAR
+        end
+      end
+    end
   end
 
   def spreadPlayers(players)
@@ -36,7 +49,16 @@ class Labyrinth
   end
 
   def to_s
-    return "Labyrinth{ nRows= #{@nRows}, nCols= #{@nCols}, exitRow= #{@exitRow}, exitCol= #{@exitCol} }"
+    laberinto = ""
+
+    @nRows.times do |i|
+      @nCols.times do |j|
+        laberinto += @labyrinth[i][j] + " "
+      end
+      laberinto += "\n"; #Salto de línea al final de cada fila
+    end
+
+    return laberinto
   end
 
   def addMonster(row, col, monster)

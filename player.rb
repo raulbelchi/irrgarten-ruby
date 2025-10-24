@@ -44,7 +44,7 @@ class Player
     return @strength + sumWeapons
   end
 
-  def deffend(receivedAttack)
+  def defend(receivedAttack)
     return manageHit(receivedAttack)
   end
 

@@ -8,16 +8,16 @@ class Game
     @log = ""
     @monsters = []
     @players = []
-    @currentPlayerIndex = @players[0]
+
     #Creamos los jugadores
     for i in 0...nPlayers
       @players.push(Player.new((i + 1), Dice.randomIntelligence, Dice.randomStrength))
     end
 
-    # Creamos el laberinto, lo configuramos y repartimos los jugadores
+    #Creamos el laberinto, lo configuramos y repartimos los jugadores
     @labyrinth = Labyrinth.new(10, 10, 5, 5)
     configureLabyrinth
-    # @labyrinth.spread_players(@players)
+    #@labyrinth.spread_players(@players)
   end
 
   def finished
@@ -37,11 +37,11 @@ class Game
     #@labyrinth.addBlock(Orientation.HORIZONTAL, 0, 0, 10)
 
     #Añade monstruos al laberinto en posiciones aleatorias
-    @monstruo1 = new Monster("monstruo1", Dice.randomIntelligence, Dice.randomStrength)
+    @monstruo1 = Monster.new("monstruo1", Dice.randomIntelligence, Dice.randomStrength)
     @monsters.push(@monstruo1)
     @labyrinth.addMonster(Dice.randomPos(@labyrinth.nRows), Dice.randomPos(@labyrinth.nCols), @monstruo1)
 
-    @monstruo2 = new Monster("monstruo2", Dice.randomIntelligence, Dice.randomStrength)
+    @monstruo2 = Monster.new("monstruo2", Dice.randomIntelligence, Dice.randomStrength)
     @monsters.push(@monstruo2)
     @labyrinth.addMonster(Dice.randomPos(@labyrinth.nRows), Dice.randomPos(@labyrinth.nCols), @monstruo2)
   end
@@ -60,7 +60,7 @@ class Game
     end
 
     #Actualizamos el jugador y el índice
-    @currentPlayerIndex = @nextIndex
+    @currentPlayerIndex = nextIndex
     @currentPlayer = @players[@currentPlayerIndex]
   end
 
