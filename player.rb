@@ -1,112 +1,178 @@
 # frozen_string_literal: true
+require_relative 'shield'
+require_relative 'weapon'
 
-class Player
-  MAX_WEAPONS = 2
-  MAX_SHIELDS = 3
-  INITIAL_HEALTH = 10
-  HITS2LOSE = 3
+module Irrgarten
+  class Player
+    MAX_WEAPONS = 2
+    MAX_SHIELDS = 3
+    INITIAL_HEALTH = 10
+    HITS2LOSE = 3
 
-  #getters
-  attr_reader :row, :col, :number
+    #getters
+    attr_reader :row, :col, :number
 
-  def initialize(number, intelligence, strength)
-    @number = number
-    @name = "Player ##{@number}"
-    @intelligence = intelligence
-    @strength = strength
-    @health = INITIAL_HEALTH
-    @consecutiveHits = 0
-    @weapons = []
-    @shields = []
-  end
-
-  def resurrect
-    @weapons.clear
-    @shields.clear
-    @health = INITIAL_HEALTH
-    @consecutiveHits = 0
-  end
-
-  def setPos(row, col)
-    @row = row
-    @col = col
-  end
-
-  def dead
-    return @health <=0
-  end
-
-  def move(direction, validMoves)
-    #IMPLEMENTAR
-  end
-
-  def attack
-    return @strength + sumWeapons
-  end
-
-  def defend(receivedAttack)
-    return manageHit(receivedAttack)
-  end
-
-  def receiveReward
-    #IMPLEMENTAR
-  end
-
-  def to_s
-    return "Player{ name= #{@name}, number= #{@number}, intelligence= #{@intelligence}, strength= #{@strength}, health= #{@health}, row= #{@row}, col= #{@col}, consecutiveHits= #{@consecutiveHits} }"
-  end
-
-  private #A partir de aquí los métodos son privados
-  def receiveWeapon(w)
-    #IMPLEMENTAR
-  end
-
-  def receiveShield(s)
-    #IMPLEMENTAR
-  end
-
-  def newWeapon
-    return Weapon.new(Dice.weaponPower, Dice.usesLeft)
-  end
-
-  def newShield
-    return Shield.new(Dice.shieldPower, Dice.usesLeft)
-  end
-
-  def sumWeapons
-    @total = 0
-    @weapons.each do |w|
-      @total += w.attack
+    def initialize(number, intelligence, strength)
+      @number = number
+      @name = "Player ##{@number}"
+      @intelligence = intelligence
+      @strength = strength
+      @health = INITIAL_HEALTH
+      @consecutive_hits = 0
+      @weapons = []
+      @shields = []
     end
-    return @total
-  end
 
-  def sumShields
-    @total = 0
-    @shields.each do |s|
-      @total += s.protect
+    def resurrect
+      @weapons.clear
+      @shields.clear
+      @health = INITIAL_HEALTH
+      @consecutive_hits = 0
     end
-    return @total
-  end
 
-  def defensiveEnergy
-    return @intelligence + sumShields
-  end
+    def set_pos(row, col)
+      @row = row
+      @col = col
+    end
 
-  def manageHit(receivedAttack)
-    #IMPLEMENTAR
-  end
+    def dead
+      return @health <=0
+    end
 
-  def resetHits
-    @consecutiveHits = 0
-  end
+    def move(direction, valid_moves)
+      size = valid_moves.size
+      contained = valid_moves.include?(direction)
 
-  def gotWounded
-    @health -= 1
-  end
+      if size > 0 && !contained
+        return valid_moves[0]
+      else
+        return direction
+      end
+    end
 
-  def incConsecutiveHits
-     @consecutiveHits += 1
-  end
+    def attack
+      return @strength + sum_weapons
+    end
 
+    def defend(received_attack)
+      return manage_hit(received_attack)
+    end
+
+    def receive_reward
+      w_reward = Dice.weapons_reward
+      s_reward = Dice.shields_reward
+
+      w_reward.times do
+        w_new = new_weapon
+        receive_weapon(w_new)
+      end
+
+      s_reward.times do
+        s_new = new_shield
+        receive_shield(s_new)
+      end
+
+      extra_health = Dice.health_reward
+      @health += extra_health
+    end
+
+    def to_s
+      return "Player{ name= #{@name}, number= #{@number}, intelligence= #{@intelligence}, strength= #{@strength}, health= #{@health}, row= #{@row}, col= #{@col}, consecutive_hits= #{@consecutive_hits}\n weapons= #{@weapons}\n shields= #{@shields} }"
+    end
+
+    private #A partir de aquí los métodos son privados
+    def receive_weapon(w)
+
+      @weapons.each do |wi|
+        discard = wi.discard
+
+        if discard
+          @weapons.delete(wi)
+        end
+      end
+
+      size = @weapons.size
+
+      if size < MAX_WEAPONS
+        @weapons.push(w)
+      end
+    end
+
+    def receive_shield(s)
+      @shields.each do |si|
+        discard = si.discard
+
+        if discard
+          @shields.delete(si)
+        end
+      end
+
+      size = @shields.size
+
+      if size < MAX_SHIELDS
+        @shields.push(s)
+      end
+    end
+
+    def new_weapon
+      return Weapon.new(Dice.weapon_power, Dice.uses_left)
+    end
+
+    def new_shield
+      return Shield.new(Dice.shield_power, Dice.uses_left)
+    end
+
+    def sum_weapons
+      total = 0
+      @weapons.each do |w|
+        total += w.attack
+      end
+      return total
+    end
+
+    def sum_shields
+      total = 0
+      @shields.each do |s|
+        total += s.protect
+      end
+      return total
+    end
+
+    def defensive_energy
+      return @intelligence + sum_shields
+    end
+
+    def manage_hit(received_attack)
+      defense = defensive_energy
+
+      if defense < received_attack
+        got_wounded
+        inc_consecutive_hits
+      else
+        reset_hits
+      end
+
+      if @consecutive_hits == HITS2LOSE || dead
+        reset_hits
+        lose = true
+      else
+        lose = false
+      end
+
+      return lose
+    end
+
+    def reset_hits
+      @consecutive_hits = 0
+    end
+
+    def got_wounded
+      @health -= 1
+    end
+
+    def inc_consecutive_hits
+       @consecutive_hits += 1
+    end
+
+  end
 end

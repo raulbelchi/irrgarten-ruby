@@ -8,12 +8,14 @@ require_relative 'labyrinth'
 require_relative 'game_state'
 require_relative 'game'
 
-juego = Game.new(2)
-estado = juego.getGameState
+module Irrgarten
+  juego = Game.new(2)
+  estado = juego.get_game_state
 
-puts estado.labyrinth
-puts estado.players
-puts estado.monsters
-puts estado.currentPlayer
-puts estado.winner
-puts estado.log
+  puts estado.labyrinth
+  puts estado.players
+  puts estado.monsters
+  puts estado.current_player
+  puts estado.winner
+  puts estado.log
+end
