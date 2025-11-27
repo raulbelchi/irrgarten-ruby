@@ -1,23 +1,33 @@
 # frozen_string_literal: true
 require_relative 'shield'
 require_relative 'weapon'
+require_relative 'labyrinth_character'
 
 module Irrgarten
-  class Player
+
+  class Player < LabyrinthCharacter
+
+    public_class_method :new
+
+    #getters
+    attr_reader :number
+
     MAX_WEAPONS = 2
     MAX_SHIELDS = 3
     INITIAL_HEALTH = 10
     HITS2LOSE = 3
 
-    #getters
-    attr_reader :row, :col, :number
-
     def initialize(number, intelligence, strength)
+      super("Player ##{number}", intelligence, strength, INITIAL_HEALTH)
       @number = number
-      @name = "Player ##{@number}"
-      @intelligence = intelligence
-      @strength = strength
-      @health = INITIAL_HEALTH
+      @consecutive_hits = 0
+      @weapons = []
+      @shields = []
+    end
+
+    def copiar(other)
+      super(other)
+      @number = other.number
       @consecutive_hits = 0
       @weapons = []
       @shields = []
@@ -33,10 +43,6 @@ module Irrgarten
     def set_pos(row, col)
       @row = row
       @col = col
-    end
-
-    def dead
-      return @health <=0
     end
 
     def move(direction, valid_moves)
@@ -77,7 +83,7 @@ module Irrgarten
     end
 
     def to_s
-      return "Player{ name= #{@name}, number= #{@number}, intelligence= #{@intelligence}, strength= #{@strength}, health= #{@health}, row= #{@row}, col= #{@col}, consecutive_hits= #{@consecutive_hits}\n weapons= #{@weapons}\n shields= #{@shields} }"
+      return "Player#{super.to_s}, number=#{@number}, consecutiveHits=#{@consecutive_hits}\nweapons=#{@weapons}\nshields=#{@shields}\n}"
     end
 
     private #A partir de aquí los métodos son privados
@@ -164,10 +170,6 @@ module Irrgarten
 
     def reset_hits
       @consecutive_hits = 0
-    end
-
-    def got_wounded
-      @health -= 1
     end
 
     def inc_consecutive_hits

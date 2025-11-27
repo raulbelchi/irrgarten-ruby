@@ -72,5 +72,13 @@ module Irrgarten
       return @@generator.rand(@@MAX_USES)
     end
 
+    def self.next_step(preference, valid_moves, intelligence)
+      if @@generator.rand(@@MAX_INTELLIGENCE) <= intelligence
+        return preference
+      else
+        return valid_moves[@@generator.rand(valid_moves.size)]
+      end
+    end
+
   end
 end

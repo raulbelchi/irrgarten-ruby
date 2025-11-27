@@ -1,29 +1,23 @@
 # frozen_string_literal: true
 require_relative 'dice'
+require_relative 'combat_element'
 
 module Irrgarten
-  class Shield
+  class Shield < CombatElement
+
+    public_class_method :new
 
     def initialize(protection, uses)
-      @protection = protection
-      @uses = uses
+      super(protection, uses)
     end
 
     def to_s
-      return "S[#{@protection}, #{@uses}]"
+      return "S[protection=#{super.to_s}"
     end
 
-    def protect()
-      if (@uses > 0)
-        @uses -= 1
-        return @protection
-      else
-        return 0
-      end
+    def protect
+      produce_effect
     end
 
-    def discard()
-      Dice.discard_element(@uses)
-    end
   end
 end

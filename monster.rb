@@ -1,20 +1,17 @@
 # frozen_string_literal: true
-#
+
+require_relative 'labyrinth_character'
+
 module Irrgarten
-  class Monster
+  class Monster < LabyrinthCharacter
+
+    public_class_method :new
+
     INITIAL_HEALTH = 5
 
     def initialize(name, intelligence, strength)
-      @name = name
-      @intelligence = intelligence
-      @strength = strength
-      @health = INITIAL_HEALTH
-      @row = -1
-      @col = -1
-    end
-
-    def dead
-      return @health<=0
+      super(name, intelligence, strength, INITIAL_HEALTH)
+      set_pos(-1, -1)
     end
 
     def attack
@@ -34,18 +31,9 @@ module Irrgarten
       end
       return is_dead
     end
-    def set_pos(row, col)
-      @row = row
-      @col = col
-    end
 
     def to_s
-      return "Monster{ name= #{@name}, intelligence= #{@intelligence}, strength= #{@strength}, health= #{@health}, row= #{@row}, col= #{@col} }"
-    end
-
-    private
-    def got_wounded
-      @health -= 1
+      return "Monster#{super.to_s}}"
     end
   end
 end

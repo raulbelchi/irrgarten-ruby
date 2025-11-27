@@ -7,6 +7,7 @@ require_relative 'monster'
 require_relative 'game_state'
 require_relative 'orientation'
 require_relative 'game_character'
+require_relative 'fuzzy_player'
 
 module Irrgarten
   class Game
@@ -97,14 +98,6 @@ module Irrgarten
     end
 
     def configure_labyrinth_debug
-      @labyrinth.add_block(Orientation::VERTICAL, 1, 2, 3)
-      @labyrinth.add_block(Orientation::HORIZONTAL, 3, 3, 4)
-      @labyrinth.add_block(Orientation::VERTICAL, 4, 3, 4)
-      @labyrinth.add_block(Orientation::VERTICAL, 3, 8, 1)
-      @labyrinth.add_block(Orientation::VERTICAL, 2, 5, 1)
-      @labyrinth.add_block(Orientation::VERTICAL, 8, 5, 1)
-      @labyrinth.add_block(Orientation::VERTICAL, 7, 2, 1)
-      @labyrinth.add_block(Orientation::VERTICAL, 6, 5, 1)
 
       #Añade monstruos al laberinto
       @monstruo1 = Monster.new("monstruo1", 1000, 1000)
@@ -168,7 +161,11 @@ module Irrgarten
       resurrect = Dice.resurrect_player
 
       if resurrect
-        @current_player.resurrect
+        fuzzy_player = FuzzyPlayer.new(@current_player)
+        fuzzy_player.resurrect
+        @current_player = fuzzy_player
+        @players[@current_player_index] = fuzzy_player
+        @labyrinth.set_fuzzy_player(fuzzy_player)
         log_resurrected
       else
         log_player_skip_turn

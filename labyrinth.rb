@@ -123,6 +123,14 @@ module Irrgarten
       return output
     end
 
+    #Metodo para añadir el fuzzy player al laberinto
+    def set_fuzzy_player(fp)
+      row = fp.row
+      col = fp.col
+
+      @players[row][col] = fp
+    end
+
     private #A partir de aquí todos los métodos son privados
     def pos_OK(row, col)
       if row < 0 || row >= @n_rows || col < 0 || col >= @n_cols

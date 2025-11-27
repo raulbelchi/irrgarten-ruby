@@ -1,29 +1,24 @@
 # frozen_string_literal: true
 require_relative 'dice'
+require_relative 'combat_element'
 
 module Irrgarten
-  class Weapon
+
+  class Weapon < CombatElement
+
+    public_class_method :new
 
     def initialize(power, uses)
-      @power = power
-      @uses = uses
+      super(power, uses)
     end
 
     def to_s
-      return "W[#{@power}, #{@uses}]"
+      return "W[power=#{super.to_s}"
     end
 
-    def attack()
-      if (@uses > 0)
-        @uses -= 1
-        return @power
-      else
-        return 0
-      end
+    def attack
+      produce_effect
     end
 
-    def discard()
-      Dice.discard_element(@uses)
-    end
   end
 end
